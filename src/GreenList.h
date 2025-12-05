@@ -4,7 +4,7 @@
 #include "GreenNode.h"
 #include <string>
 
-class GreenStack; // <--- FIX 1: Tell the compiler GreenStack exists
+class GreenStack; 
 
 class GreenList {
 private:
@@ -14,14 +14,14 @@ public:
     GreenList();
     ~GreenList();
 
-    void addFront(const std::string& name, const std::string& loc, int year);
-    void addBack(const std::string& name, const std::string& loc, int year);
-    
-    // <--- FIX 2: Add "GreenStack& trash" so we can save deleted items
+
+    void addFront(const std::string& name, const std::string& loc, int year, int sdg);
+    void addBack(const std::string& name, const std::string& loc, int year, int sdg);
+    void insertSorted(const std::string& name, const std::string& loc, int year, int sdg);
+
     bool removeByName(const std::string name, GreenStack& trash);
     
     void printAll() const;
-    void insertSorted(const std::string& name, const std::string& loc, int year);
 };
 
 #endif

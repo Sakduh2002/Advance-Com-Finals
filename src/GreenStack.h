@@ -17,8 +17,8 @@ public:
         }
     }
 
-    void push(std::string name, std::string loc, int year) {
-        GreenNode* newNode = new GreenNode(name, loc, year);
+    void push(std::string name, std::string loc, int year, int sdg) {
+        GreenNode* newNode = new GreenNode(name, loc, year, sdg);
         newNode->next = top;
         top = newNode;
     }
@@ -42,7 +42,8 @@ public:
         GreenNode* cur = top;
         std::cout << "--- TRASH BIN (Recent on top) ---\n";
         while (cur != nullptr) {
-            std::cout << "[Deleted] " << cur->projectName << "\n";
+            std::cout << "[Deleted] " << cur->projectName 
+                      << " (SDG " << cur->sdg << ")\n"; 
             cur = cur->next;
         }
         std::cout << "---------------------------------\n";

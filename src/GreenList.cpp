@@ -1,5 +1,5 @@
 #include "GreenList.h"
-#include "GreenStack.h" // Needed to use the trash bin!
+#include "GreenStack.h" 
 #include <iostream>
 
 GreenList::GreenList() : head(nullptr) {}
@@ -13,14 +13,14 @@ GreenList::~GreenList() {
     }
 }
 
-void GreenList::addFront(const std::string& name, const std::string& loc, int year) {
-    GreenNode* newNode = new GreenNode(name, loc, year);
+void GreenList::addFront(const std::string& name, const std::string& loc, int year, int sdg) {
+    GreenNode* newNode = new GreenNode(name, loc, year, sdg);
     newNode->next = head;
     head = newNode;
 }
 
-void GreenList::addBack(const std::string& name, const std::string& loc, int year) {
-    GreenNode* newNode = new GreenNode(name, loc, year);
+void GreenList::addBack(const std::string& name, const std::string& loc, int year, int sdg) {
+    GreenNode* newNode = new GreenNode(name, loc, year, sdg);
 
     if (head == nullptr) {
         head = newNode;
@@ -33,30 +33,28 @@ void GreenList::addBack(const std::string& name, const std::string& loc, int yea
     cur->next = newNode;
 }
 
-// FIXED LOGIC: Now we actually use 'trash' to save data before deleting!
 bool GreenList::removeByName(const std::string name, GreenStack& trash) {
     if (head == nullptr) return false;
 
-    // Case 1: Head is the target
+ 
     if (head->getName() == name) {
         GreenNode* temp = head;
         
-        // SAVE TO TRASH BEFORE DELETING
-        trash.push(temp->getName(), temp->getLoc(), temp->getYear());
+        trash.push(temp->getName(), temp->getLoc(), temp->getYear(), temp->getSDG());
         
         head = head->next; 
         delete temp;       
         return true;
     }
 
-    // Case 2: Middle/End
+
     GreenNode* prev = head;
     GreenNode* cur = head->next;
 
     while (cur != nullptr) {
         if (cur->getName() == name) {
-            // SAVE TO TRASH BEFORE DELETING
-            trash.push(cur->getName(), cur->getLoc(), cur->getYear());
+    
+            trash.push(cur->getName(), cur->getLoc(), cur->getYear(), cur->getSDG());
             
             prev->next = cur->next;
             delete cur;
@@ -72,18 +70,18 @@ bool GreenList::removeByName(const std::string name, GreenStack& trash) {
 void GreenList::printAll() const {
     GreenNode* cur = head;
     while (cur != nullptr) {
-        std::cout << "Project: " << cur->getName() << "\n"; // Updated to use getName()
+        std::cout << "Project: " << cur->getName() << "\n";
         std::cout << "Location: " << cur->getLoc() << "\n";
         std::cout << "Start Year: " << cur->getYear() << "\n";
+        std::cout << "SDG Goal: " << cur->getSDG() << "\n";
         std::cout << "-----------------------------\n";
         cur = cur->next;
     }
 }
 
-void GreenList::insertSorted(const std::string& name, const std::string& loc, int year) {
-    GreenNode* newNode = new GreenNode(name, loc, year);
+void GreenList::insertSorted(const std::string& name, const std::string& loc, int year, int sdg) {
+    GreenNode* newNode = new GreenNode(name, loc, year, sdg);
 
-    // Note: Used getYear() accessor here
     if (head == nullptr || head->getYear() >= year) {
         newNode->next = head;
         head = newNode;

@@ -1,18 +1,27 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include <cstdlib> 
 #include "GreenList.h"
 #include "GreenStack.h" 
 
 using namespace std;
 
-int main() {
+int main(int argc, char* argv[]) {
     GreenList list;
     GreenStack trashBin;
 
+    if (argc > 1) {
+        for (int i = 1; i < argc; i += 4) { 
+            if (i + 3 < argc) {
+                list.insertSorted(argv[i], argv[i+1], atoi(argv[i+2]), atoi(argv[i+3]));
+            }
+        }
+    }
+
     int ans = 0;
     string name, loc;
-    int year;
+    int year, sdg;
 
     while (ans != 6) {
         cout << "\n=== Mahidol Green DB ===\n";
@@ -24,6 +33,7 @@ int main() {
         cout << "6. Exit\n";
         cout << "Choice: ";
         
+        
         if (!(cin >> ans)) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -31,30 +41,54 @@ int main() {
         }
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-        if (ans == 1) { 
+        if (ans == 1) { // ADD PROJECT
             cout << "Name: "; getline(cin, name);
             cout << "Location: "; getline(cin, loc);
-            cout << "Year: "; cin >> year;
             
-            list.insertSorted(name, loc, year); 
-            cout << "Project added chronologically.\n";
+            cout << "Year: "; 
+            while (!(cin >> year)) {
+                cout << "Invalid Year! Please enter a number: ";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+
+            cout << "Enter SDG Goal (1-17): ";
+            while (true) {
+                if (!(cin >> sdg)) { 
+                    
+                    cout << "Error: That is not a number! Please enter 1-17: ";
+                    cin.clear(); 
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+                } 
+                else if (sdg < 1 || sdg > 17) {
+                    cout << "Error: Number out of range! Please enter 1-17: ";
+                } 
+                else {
+                    break; 
+                }
+            }
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+            list.insertSorted(name, loc, year, sdg); 
+            cout << "Project added chronologically under SDG " << sdg << ".\n";
         }
         else if (ans == 2) { 
             cout << "Name to delete: "; getline(cin, name);
             
             if (list.removeByName(name, trashBin)) {
-                 cout << "Deleted! (Note: In this simple version, data is gone. See GreenList.cpp comments on how to push to stack properly!)\n";
+                 cout << "Deleted and moved to Trash Bin.\n";
             } else {
                 cout << "Not found.\n";
             }
         }
-        else if (ans == 3) { // UNDO
+        else if (ans == 3) { 
             if (trashBin.isEmpty()) {
                 cout << "Nothing to restore!\n";
             } else {
                 GreenNode* restored = trashBin.pop();
                 
-                list.insertSorted(restored->getName(), restored->getLoc(), restored->getYear());
+                list.insertSorted(restored->getName(), restored->getLoc(), 
+                                  restored->getYear(), restored->getSDG());
                 
                 cout << "Restored: " << restored->getName() << "\n";
                 delete restored; 

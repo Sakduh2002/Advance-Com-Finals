@@ -10,20 +10,20 @@ private:
     string projectName;
     string location;
     int startYear;
+    int sdg; 
     GreenNode* next;
 
 public:
-    GreenNode(std::string name, std::string loc, int year);
+    GreenNode(std::string name, std::string loc, int year, int sdgVal);
     ~GreenNode();
 
-    // 1. Allow the List AND the Stack to touch private data
     friend class GreenList;
     friend class GreenStack;
 
-    // 2. Add "Getters" so main.cpp can read the data safely
     string getName() { return projectName; }
     string getLoc() { return location; }
     int getYear() { return startYear; }
+    int getSDG() { return sdg; } // <--- NEW Getter
 };
 
 #endif
